@@ -19,8 +19,7 @@ import android.widget.ImageView;
 /**
  * Utility class to create a split activity animation
  *
- * User: Udi Cohen
- * Date: 13/03/13
+ * @author Udi Cohen (@udinic)
  */
 public class ActivitySplitAnimationUtil {
 
