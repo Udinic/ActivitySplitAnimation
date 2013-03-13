@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
@@ -214,11 +215,12 @@ public class ActivitySplitAnimationUtil {
         windowParams.y = loc[1];
         windowParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         windowParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        windowParams.flags =
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+//                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+//                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         ;
         windowParams.format = PixelFormat.TRANSLUCENT;
         windowParams.windowAnimations = 0;
