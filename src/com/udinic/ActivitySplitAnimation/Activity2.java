@@ -16,7 +16,7 @@ public class Activity2 extends Activity {
         setContentView(R.layout.act_two);
 
         // Animating the items to be open, revealing the new activity
-        ActivitySplitAnimationUtil.animate(this, 5000);
+        ActivitySplitAnimationUtil.animate(this, 1000);
     }
 
     @Override
