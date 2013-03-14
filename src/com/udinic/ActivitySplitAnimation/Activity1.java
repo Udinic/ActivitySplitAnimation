@@ -16,13 +16,6 @@ public class Activity1 extends Activity {
 
             @Override
             public void onClick(View v) {
-                ActivitySplitAnimationUtil.startActivity(Activity1.this, new Intent(Activity1.this, Activity2.class), 500);
-            }
-        });
-        findViewById(R.id.two).setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
                 ActivitySplitAnimationUtil.startActivity(Activity1.this, new Intent(Activity1.this, Activity2.class));
             }
         });
