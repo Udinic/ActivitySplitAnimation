@@ -3,6 +3,7 @@ Activity Split Animation
 
 A utility class to create split Activity animation.
 
+![screenshots](https://raw.github.com/Udinic/ActivitySplitAnimation/master/screenshots/all.png)
 
 Usage
 =====
@@ -45,3 +46,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+ [1]: 	https://raw.github.com/Udinic/ActivitySplitAnimation/master/screenshots/screenshot1.png
