@@ -8,7 +8,7 @@ A utility class to create split Activity animation.
 Usage
 =====
 
-On Activity A, when you want to call Activity B, call:
+On Activity A, when you want to call Activity B, use:
 
 	ActivitySplitAnimationUtil.startActivity(Activity1.this, new Intent(Activity1.this, Activity2.class));
 
