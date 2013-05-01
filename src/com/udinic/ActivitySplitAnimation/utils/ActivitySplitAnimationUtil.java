@@ -5,16 +5,20 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
@@ -24,8 +28,7 @@ import android.widget.ImageView;
  */
 public class ActivitySplitAnimationUtil {
 
-    public static Bitmap mBmp1 = null;
-    public static Bitmap mBmp2 = null;
+    public static Bitmap mBitmap = null;
     private static int[] mLoc1;
     private static int[] mLoc2;
     private static ImageView mTopImage;
@@ -65,8 +68,8 @@ public class ActivitySplitAnimationUtil {
      * @param destActivity the destination Activity
      */
     public static void prepareAnimation(final Activity destActivity) {
-        mTopImage = createImageView(destActivity, mBmp1, mLoc1);
-        mBottomImage = createImageView(destActivity, mBmp2, mLoc2);
+        mTopImage = createImageView(destActivity, mBitmap, mLoc1);
+        mBottomImage = createImageView(destActivity, mBitmap, mLoc2);
     }
 
     /**
@@ -165,8 +168,7 @@ public class ActivitySplitAnimationUtil {
             }
         }
 
-        mBmp1 = null;
-        mBmp2 = null;
+        mBitmap = null;
     }
 
     /**
@@ -180,21 +182,17 @@ public class ActivitySplitAnimationUtil {
         // Get the content of the activity and put in a bitmap
         View root = currActivity.getWindow().getDecorView().findViewById(android.R.id.content);
         root.setDrawingCacheEnabled(true);
-        Bitmap bmp = root.getDrawingCache();
+        mBitmap = root.getDrawingCache();
 
         // If the split Y coordinate is -1 - We'll split the activity equally
-        splitYCoord = (splitYCoord != -1 ? splitYCoord : bmp.getHeight() / 2);
+        splitYCoord = (splitYCoord != -1 ? splitYCoord : mBitmap.getHeight() / 2);
 
-        if (splitYCoord > bmp.getHeight())
-            throw new IllegalArgumentException("Split Y coordinate [" + splitYCoord + "] exceeds the activity's height [" + bmp.getHeight() + "]");
-
-        // Split the bitmap into 2 parts by the split point
-        mBmp1 = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), splitYCoord);
-        mBmp2 = Bitmap.createBitmap(bmp, 0, splitYCoord, bmp.getWidth(), bmp.getHeight() - splitYCoord);
+        if (splitYCoord > mBitmap.getHeight())
+            throw new IllegalArgumentException("Split Y coordinate [" + splitYCoord + "] exceeds the activity's height [" + mBitmap.getHeight() + "]");
 
         // Set the location to put the 2 bitmaps on the destination activity
-        mLoc1 = new int[]{0, root.getTop()};
-        mLoc2 = new int[]{0, root.getTop() + splitYCoord};
+        mLoc1 = new int[]{0, splitYCoord, root.getTop()};
+        mLoc2 = new int[]{splitYCoord, mBitmap.getHeight(), root.getTop()};
     }
 
     /**
@@ -206,26 +204,72 @@ public class ActivitySplitAnimationUtil {
      * @return
      */
     private static ImageView createImageView(Activity destActivity, Bitmap bmp, int loc[]) {
-        ImageView imageView = new ImageView(destActivity);
+    	MyImageView imageView = new MyImageView(destActivity);
         imageView.setImageBitmap(bmp);
-
+        imageView.setImageOffsets(bmp.getWidth(), loc[0], loc[1]);                     
+        
         WindowManager.LayoutParams windowParams = new WindowManager.LayoutParams();
         windowParams.gravity = Gravity.TOP;
-        windowParams.x = loc[0];
-        windowParams.y = loc[1];
-        windowParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        windowParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        windowParams.flags =
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-//                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-//                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-//                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        ;
+        windowParams.x = 0;
+        windowParams.y = loc[2] + loc[0];
+        windowParams.height = loc[1] - loc[0];
+        windowParams.width = bmp.getWidth();
+        windowParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         windowParams.format = PixelFormat.TRANSLUCENT;
         windowParams.windowAnimations = 0;
         destActivity.getWindowManager().addView(imageView, windowParams);
 
         return imageView;
+    }
+    
+    /**
+     * MyImageView
+     * Extended ImageView that draws just part of an image, base on start/end position  
+     */
+    private static class MyImageView extends ImageView
+    {
+    	private Rect mSrcRect;
+    	private Rect mDstRect;
+    	private Paint mPaint;    	
+    	
+		public MyImageView(Context context) 
+		{
+			super(context);
+			mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		}
+		
+		/**
+	     * Setting the bitmap offests to control the visible area
+	     *
+	     * @param width		   The bitmap image
+	     * @param bmp          The start Y position
+	     * @param loc          The end Y position
+	     * @return
+	     */
+		public void setImageOffsets(int width, int startY, int endY)
+		{
+			mSrcRect = new Rect(0, startY, width, endY);
+			mDstRect = new Rect(0, 0, width, endY - startY);
+		}
+				
+		@Override
+		protected void onDraw(Canvas canvas)
+		{
+			Bitmap bm = null;
+			Drawable drawable = getDrawable();
+			if (null != drawable && drawable instanceof BitmapDrawable)
+			{
+				bm = ((BitmapDrawable)drawable).getBitmap();
+			}
+			
+			if (null == bm)
+			{
+				super.onDraw(canvas);
+			}
+			else
+			{
+				canvas.drawBitmap(bm, mSrcRect, mDstRect, mPaint);
+			}
+		}    	
     }
 }
