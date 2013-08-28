@@ -12,7 +12,7 @@ public class Activity2 extends Activity {
 	
 	// Get intent information for the split animation
 	Intent i = getIntent();
-	boolean animate = i.getBooleanExtra("fromLoginActivity", false);
+	boolean animate = i.getBooleanExtra("doSplitAnimation", false);
 	
 	// Once the doSplitAnimation extra has been read, we remoe it from intent so
 	// that the animation doesn't occur or other instances of onCreate() being
