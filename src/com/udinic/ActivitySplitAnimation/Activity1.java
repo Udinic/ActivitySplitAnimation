@@ -17,7 +17,7 @@ public class Activity1 extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Activity1.this, Activity2.class);
-				i.putExtra("doSplitAnimation", true);
+		i.putExtra("doSplitAnimation", true);
                 ActivitySplitAnimationUtil.startActivity(Activity1.this, );
             }
         });
