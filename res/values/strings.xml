@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ActivitySplitAnimation</string>
+    
+     <!-- Titles -->
+    <string name="title_activity">Activity</string>
+    <string name="title_fragment">Fragment</string>
+   
 </resources>
