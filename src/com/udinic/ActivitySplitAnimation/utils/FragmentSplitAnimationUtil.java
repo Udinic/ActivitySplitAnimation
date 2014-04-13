@@ -151,6 +151,7 @@ public class FragmentSplitAnimationUtil {
             try {
                 // If we use the regular removeView() we'll get a small UI glitch
                 activity.getWindowManager().removeViewImmediate(mBottomImage);
+                System.out.println("Delete");
             } catch (Exception ignored) {
             }
         }
@@ -159,6 +160,7 @@ public class FragmentSplitAnimationUtil {
             try {
                 activity.getWindowManager().removeViewImmediate(mTopImage);
             } catch (Exception ignored) {
+            	
             }
         }
 
